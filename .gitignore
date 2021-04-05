@@ -12,3 +12,7 @@ results/*.ipynb*
 src/datasets/synbols
 usr_configs.py
 tmp.png
+TRANCOS_v3/
+TRANCOS_v3*
+TRANCOS_v3.tar.gz
+output/

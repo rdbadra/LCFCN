@@ -7,6 +7,7 @@ from scipy.io import loadmat
 import torchvision.transforms.functional as FT
 from haven import haven_utils as hu
 from . import transformers
+from PIL import Image
 
 
 
@@ -37,18 +38,25 @@ class Trancos(data.Dataset):
         name = self.img_names[index]
 
         # LOAD IMG, POINT, and ROI
-        image = imread(os.path.join(self.path, name + ".jpg"))
+        #image = imread(os.path.join(self.path, name + ".jpg"))
         points = imread(os.path.join(self.path, name + "dots.png"))[:,:,:1].clip(0,1)
+        image = Image.open(os.path.join(self.path, name + ".jpg")).convert('RGB')
         roi = loadmat(os.path.join(self.path, name + "mask.mat"))["BW"][:,:,np.newaxis]
         
         # LOAD IMG AND POINT
+        
+        
         image = image * roi
         image = hu.shrink2roi(image, roi)
         points = hu.shrink2roi(points, roi).astype("uint8")
 
         counts = torch.LongTensor(np.array([int(points.sum())]))   
         
-        collection = list(map(FT.to_pil_image, [image, points]))
+        image, points = list(map(FT.to_pil_image, [image, points]))
+        
+        image = image.resize([224, 224], Image.LANCZOS)
+        points = points.resize([224, 224], Image.LANCZOS)
+
         image, points = transformers.apply_transform(self.split, image, points, 
                    transform_name=self.exp_dict['dataset']['transform'])
             

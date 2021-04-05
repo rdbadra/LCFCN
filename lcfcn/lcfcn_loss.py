@@ -131,8 +131,12 @@ def watersplit(_probs, _points):
 
 
 def get_blobs(probs, roi_mask=None):
-    probs = probs.squeeze()
-    h, w = probs.shape
+    # probs = probs.squeeze()
+    if(len(probs.shape) == 3):
+        b, h, w = probs.shape
+    else:
+        probs = probs.squeeze()
+        h, w = probs.shape
  
     pred_mask = (probs>0.5).astype('uint8')
     blobs = np.zeros((h, w), int)
