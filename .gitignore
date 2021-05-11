@@ -12,3 +12,6 @@ results/*.ipynb*
 src/datasets/synbols
 usr_configs.py
 tmp.png
+
+output
+TRANCOS_v3/

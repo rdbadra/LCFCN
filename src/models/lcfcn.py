@@ -28,7 +28,7 @@ class LCFCN(torch.nn.Module):
         self.exp_dict = exp_dict
 
         self.model_base = base_networks.get_base(self.exp_dict['model']['base'],
-                                               self.exp_dict, n_classes=self.n_classes)
+                                               self.exp_dict, n_classes=self.n_classes).cuda()
 
         if self.exp_dict["optimizer"] == "adam":
             self.opt = torch.optim.Adam(
@@ -48,9 +48,14 @@ class LCFCN(torch.nn.Module):
         train_meter = metrics.Meter()
         
         pbar = tqdm.tqdm(total=n_batches)
+
         for batch in train_loader:
-            score_dict = model.train_on_batch(batch)
-            train_meter.add(score_dict['train_loss'], batch['images'].shape[0])
+            try:
+                score_dict = model.train_on_batch(batch)
+                train_meter.add(score_dict['train_loss'], batch['images'].shape[0])
+            except:
+                print(f'Failed on image: {batch["meta"]["index"]}')
+            
 
             pbar.set_description("Training. Loss: %.4f" % train_meter.get_avg_score())
             pbar.update(1)
@@ -67,9 +72,11 @@ class LCFCN(torch.nn.Module):
         val_meter = metrics.Meter()
         pbar = tqdm.tqdm(total=n_batches)
         for i, batch in enumerate(tqdm.tqdm(val_loader)):
-            score_dict = self.val_on_batch(batch)
-            val_meter.add(score_dict['miscounts'], batch['images'].shape[0])
-            
+            try:
+                score_dict = self.val_on_batch(batch)
+                val_meter.add(score_dict['miscounts'], batch['images'].shape[0])
+            except:
+                print(f'Failed on image: {batch["meta"]["index"]}')
             pbar.update(1)
 
             if savedir_images and i < n_images:
@@ -85,8 +92,9 @@ class LCFCN(torch.nn.Module):
         return val_dict
 
     def train_on_batch(self, batch, **extras):
-        self.opt.zero_grad()
         self.train()
+        self.opt.zero_grad()
+        
 
         images = batch["images"].cuda()
         points = batch["points"].long().cuda()

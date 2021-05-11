@@ -4,7 +4,7 @@ EXP_GROUPS = {}
 EXP_GROUPS['trancos'] =  {"dataset": {'name':'trancos', 
                           'transform':'rgb_normalize'},
          "model": {'name':'lcfcn','base':"fcn8_vgg16"},
-         "batch_size": [1,5,10],
+         "batch_size": [1],
          "max_epoch": [100],
          'dataset_size': [
                           {'train':'all', 'val':'all'},

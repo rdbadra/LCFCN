@@ -8,4 +8,7 @@ class Meter:
         self.n_counts += n_counts
 
     def get_avg_score(self):
-        return self.n_sum / self.n_counts
+        if(self.n_counts == 0):
+            return 1
+        else:
+            return self.n_sum / self.n_counts
