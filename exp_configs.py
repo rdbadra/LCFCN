@@ -13,6 +13,18 @@ EXP_GROUPS['trancos'] =  {"dataset": {'name':'trancos',
          'lr':[1e-5]
          }
 
+EXP_GROUPS['microplastics'] =  {"dataset": {'name':'microplastics', 
+                          'transform':'rgb_normalize'},
+         "model": {'name':'lcfcn','base':"fcn8_vgg16"},
+         "batch_size": [1],
+         "max_epoch": [100],
+         'dataset_size': [
+                          {'train':'all', 'val':'all'},
+                          ],
+         'optimizer':['adam'],
+         'lr':[1e-5]
+         }
+
 EXP_GROUPS['shanghai'] =  {"dataset": {'name':'shanghai', 
                             'transform':'rgb_normalize'},
          "model": {'name':'lcfcn','base':"fcn8_vgg16"},

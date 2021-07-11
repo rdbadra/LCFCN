@@ -50,11 +50,12 @@ class LCFCN(torch.nn.Module):
         pbar = tqdm.tqdm(total=n_batches)
 
         for batch in train_loader:
-            try:
-                score_dict = model.train_on_batch(batch)
-                train_meter.add(score_dict['train_loss'], batch['images'].shape[0])
-            except:
-                print(f'Failed on image: {batch["meta"]["index"]}')
+            #try:
+            score_dict = model.train_on_batch(batch)
+            train_meter.add(score_dict['train_loss'], batch['images'].shape[0])
+            
+            #except:
+            #    print(f'Failed on image: {batch["meta"]["index"]}')
             
 
             pbar.set_description("Training. Loss: %.4f" % train_meter.get_avg_score())
@@ -96,7 +97,7 @@ class LCFCN(torch.nn.Module):
         self.opt.zero_grad()
         
 
-        images = batch["images"].cuda()
+        images = batch["images"].float().cuda()
         points = batch["points"].long().cuda()
         logits = self.model_base.forward(images)
         loss = lcfcn_loss.compute_loss(points=points, probs=logits.sigmoid())
@@ -120,7 +121,7 @@ class LCFCN(torch.nn.Module):
 
     def val_on_batch(self, batch):
         self.eval()
-        images = batch["images"].cuda()
+        images = batch["images"].float().cuda()
         points = batch["points"].long().cuda()
         logits = self.model_base.forward(images)
         probs = logits.sigmoid().cpu().numpy()
@@ -133,7 +134,7 @@ class LCFCN(torch.nn.Module):
     @torch.no_grad()
     def vis_on_batch(self, batch, savedir_image):
         self.eval()
-        images = batch["images"].cuda()
+        images = batch["images"].float().cuda()
         points = batch["points"].long().cuda()
         logits = self.model_base.forward(images)
         probs = logits.sigmoid().cpu().numpy()
