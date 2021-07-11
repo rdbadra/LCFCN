@@ -21,7 +21,7 @@ class MicroPlastics(data.Dataset):
         self.exp_dict = exp_dict
         
         self.n_classes = 1
-        IMAGE_DIR = '/home/roberto/Descargas/ImagenesMicroplasticos/images/'
+        IMAGE_DIR = '/home/roberto/Descargas/ImagenesMicroplasticos/mosaic/'
 
         all_files = []
         for (dirpath, dirnames, filenames) in walk(IMAGE_DIR):
@@ -56,7 +56,7 @@ class MicroPlastics(data.Dataset):
         name = self.img_names[index]
 
         # LOAD IMG, POINT, and ROI
-        image = imread(os.path.join(self.path, name + ".jpg"))
+        image = imread(os.path.join(self.path, name + ".png"))
 
 
         points = imread(os.path.join(self.path, name + "_dots.png"))[:,:,:1].clip(0,1)

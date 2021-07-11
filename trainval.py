@@ -103,7 +103,7 @@ def trainval(exp_dict, savedir_base, datadir, reset=False, num_workers=0):
         # Validate and Visualize the model
         val_dict = model.val_on_loader(val_loader, 
                         savedir_images=os.path.join(savedir, "images"),
-                        n_images=3)
+                        n_images=10)
         score_dict.update(val_dict)
         # model.vis_on_loader(
         #     vis_loader, savedir=os.path.join(savedir, "images"))
