@@ -31,11 +31,13 @@ class MicroPlastics(data.Dataset):
         self.img_names = [file.split('_dots.png')[0] for file in all_files if '_dots.png' in file]
 
         if split == "train":
-            self.img_names = self.img_names[:int(len(self.img_names)*0.8)]
+            # self.img_names = self.img_names[:int(len(self.img_names)*0.8)]
+            self.img_names = [image for image in self.img_names if 'wild_' not in image]
             print(f'TRAIN IMAGES: {len(self.img_names)}')
 
         elif split == "val":
-            self.img_names = self.img_names[int(len(self.img_names)*0.8):]
+            # self.img_names = self.img_names[int(len(self.img_names)*0.8):]
+            self.img_names = [image for image in self.img_names if 'wild_' in image]
             print(f'VALID IMAGES: {len(self.img_names)}')
 
         elif split == "test":

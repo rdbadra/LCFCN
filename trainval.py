@@ -93,6 +93,9 @@ def trainval(exp_dict, savedir_base, datadir, reset=False, num_workers=0):
                               batch_size=exp_dict["batch_size"], 
                               drop_last=True, num_workers=num_workers)
 
+    rounds_without_improvement = 0
+    MAX_ROUNDS_WITHOUT_IMPROVEMENT = 10
+    best_loss = 1000
     for e in range(s_epoch, exp_dict['max_epoch']):
         # Validate only at the start of each cycle
         score_dict = {}
@@ -129,6 +132,18 @@ def trainval(exp_dict, savedir_base, datadir, reset=False, num_workers=0):
             hu.torch_save(os.path.join(savedir, "model_best.pth"),
                           model.get_state_dict())
             print("Saved Best: %s" % savedir)
+
+        if val_dict['val_mae'] < best_loss:
+            best_loss = val_dict['val_mae']
+            print(f'Updated Best Validation Loss: {best_loss}')
+            rounds_without_improvement = 0
+        else:
+            rounds_without_improvement += 1
+
+        if rounds_without_improvement >= MAX_ROUNDS_WITHOUT_IMPROVEMENT:
+            break
+
+        
 
     print('Experiment completed et epoch %d' % e)
 
